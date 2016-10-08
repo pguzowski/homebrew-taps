@@ -9,6 +9,8 @@ class Myptd2root < Formula
   version "0.1.0"
   sha256 "f67576d382a85ad550e2dfb739a824b066513ef29f5818a9b44d818d3783b648"
 
+  patch :DATA
+
   depends_on "cmake" => :build
   depends_on "supernemo-dbd/cadfael/falaise"
 
@@ -30,3 +32,13 @@ class Myptd2root < Formula
     system "flmyptd2root.py --help"
   end
 end
+__END__
+diff --git a/myana.py b/myana.py
+--- a/myana.py
++++ b/myana.py
+@@ -1,4 +1,4 @@
+-#!/bin/env python
++#!/usr/bin/env python
+ 
+ try:
+     import ROOT
