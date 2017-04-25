@@ -5,12 +5,9 @@
 class Myptd2root < Formula
   desc "Falaise plugin to convert BRIO reconstruction output to ROOT"
   homepage "https://github.com/pguzowski/MyPTD2Root"
-  url "https://github.com/pguzowski/MyPTD2Root/archive/v0.1.0.tar.gz"
-  version "0.1.0"
-  sha256 "f67576d382a85ad550e2dfb739a824b066513ef29f5818a9b44d818d3783b648"
-  revision 2
-
-  patch :DATA
+  url "https://github.com/pguzowski/MyPTD2Root/archive/v0.1.1.tar.gz"
+  version "0.1.1"
+  sha256 "235259cac7483fb66d7b3f34e1ae22775d49c960cab27dfdab976a8216e79c51"
 
   depends_on "cmake" => :build
   depends_on "supernemo-dbd/cadfael/falaise"
@@ -33,65 +30,3 @@ class Myptd2root < Formula
     system "flmyptd2root.py --help"
   end
 end
-__END__
-diff --git a/myana.py b/myana.py
---- a/myana.py
-+++ b/myana.py
-@@ -1,4 +1,4 @@
--#!/bin/env python
-+#!/usr/bin/env python
- 
- try:
-     import ROOT
-diff --git a/flmyptd2root.py b/flmyptd2root.py
-index f0c0e9f..fc3aff6 100755
---- a/flmyptd2root.py
-+++ b/flmyptd2root.py
-@@ -2,6 +2,17 @@
- import os
- import argparse
- import subprocess
-+from contextlib import contextmanager
-+import shutil
-+import tempfile
-+
-+@contextmanager
-+def tmpdir():
-+    temp_dir = tempfile.mkdtemp()
-+    try:
-+        yield temp_dir
-+    finally:
-+        shutil.rmtree(temp_dir)
- 
- def getConversionScript():
-     """ derive path to conversion script from this
-@@ -18,15 +29,20 @@ def flbrio2root():
-     parser.add_argument("-o", type=str, metavar="<outfile>", required=True, help="output ROOT file")
-     args = parser.parse_args()
- 
--    try:
--        subprocess.call(["flreconstruct", "-i", args.i, "-p", getConversionScript()])
--        os.rename("testptd.root", args.o)
--    except OSError as e:
--        if e.errno == os.errno.ENOENT:
--            print("error: could not locate flreconstruct program")
--        else:
--            # Something else went wrong while trying to run `flreconstruct`
--            raise
-+    fullinpath = os.path.realpath(args.i)
-+    fulloutpath = os.path.realpath(args.o)
-+
-+    with tmpdir() as temp_dir:
-+
-+        try:
-+            subprocess.call(["flreconstruct", "-i", fullinpath, "-p", getConversionScript()],cwd=temp_dir)
-+            shutil.move(temp_dir+'/testptd.root', fulloutpath)
-+        except OSError as e:
-+            if e.errno == os.errno.ENOENT:
-+                print("error: could not locate flreconstruct program")
-+            else:
-+                # Something else went wrong while trying to run `flreconstruct`
-+                raise
- 
- 
- if __name__ == '__main__':
