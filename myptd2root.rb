@@ -5,9 +5,9 @@
 class Myptd2root < Formula
   desc "Falaise plugin to convert BRIO reconstruction output to ROOT"
   homepage "https://github.com/pguzowski/MyPTD2Root"
-  url "https://github.com/pguzowski/MyPTD2Root/archive/v0.1.2.tar.gz"
-  version "0.1.2"
-  sha256 "b64c80d27fa0ab6008322d2f5193e6289924f84b2d431c17e1f23e47faae16d5"
+  url "https://github.com/pguzowski/MyPTD2Root/archive/v0.1.3.tar.gz"
+  version "0.1.3"
+  sha256 "3418c083426aaca8b318b1f9d20771eeaf384bdbd96040f394a8bb4968b75d4e"
 
   depends_on "cmake" => :build
   depends_on "supernemo-dbd/cadfael/falaise"
